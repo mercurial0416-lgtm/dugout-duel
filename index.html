@@ -4,148 +4,135 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#090a0c" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>DUGOUT DUEL</title>
   <script>
-    try {
-      if (!localStorage.getItem('dugout-duel-player-token-v2')) {
-        document.documentElement.classList.add('entry-active');
-      }
-    } catch (_) {}
+    (()=>{try{document.documentElement.classList.add(localStorage.getItem('dugout-duel-player-token-v2')?'has-player':'needs-player')}catch{document.documentElement.classList.add('needs-player')}})();
   </script>
-  <link rel="stylesheet" href="./styles.css?v=5" />
-  <link rel="stylesheet" href="./entry.css?v=3" />
+  <style>
+    html.needs-player #app{display:none!important}
+    html.has-player #careerEntry{display:none!important}
+  </style>
+  <link rel="stylesheet" href="./styles.css?v=9" />
+  <link rel="stylesheet" href="./entry.css?v=4" />
   <link rel="stylesheet" href="./fm.css?v=4" />
 </head>
 <body>
-  <main id="app">
-    <section class="shell home" id="homeView">
-      <header class="brand-head">
-        <div class="eyebrow">BASEBALL CAREER × RIVAL DUEL</div>
-        <h1>DUGOUT<br><span>DUEL</span></h1>
+  <div id="careerEntry">
+    <div class="ce-wrap">
+      <header class="ce-top">
+        <div class="ce-brand">DUGOUT <b>DUEL</b></div>
+        <div class="ce-step" id="ceStep">CAREER MODE</div>
       </header>
 
-      <section id="onboardingPanel" class="onboarding hidden">
-        <div class="hero-copy">
-          <h2>선수 등록</h2>
-          <p class="lede">커리어 선수를 등록합니다.</p>
+      <section class="ce-screen ce-intro active" id="ceIntro">
+        <div class="ce-eyebrow">HIGH SCHOOL · FINAL SEASON</div>
+        <div class="ce-intro-line">고교 마지막 시즌.</div>
+        <div class="ce-intro-line">프로 지명까지 <strong>12주</strong>.</div>
+        <div class="ce-intro-line">여기서 커리어가 시작된다.</div>
+        <div class="ce-intro-foot">
+          <span>선수 프로필을 등록합니다.</span>
+          <button class="ce-text-btn" id="ceStart" type="button">시작 →</button>
         </div>
-        <button class="cta big" id="newPlayerBtn">선수 등록</button>
       </section>
 
-      <section id="dashboardPanel" class="dashboard hidden">
-        <div class="dashboard-top">
-          <div>
-            <div class="eyebrow">MY CAREER</div>
-            <h2>PLAYER</h2>
+      <section class="ce-screen ce-create" id="ceCreate">
+        <div class="ce-chapter">CHAPTER 01</div>
+        <h1 class="ce-title">선수 생성</h1>
+        <p class="ce-desc">이 프로필이 솔로 커리어와 라이벌 매치에 공통으로 사용됩니다.</p>
+
+        <div class="ce-photo-row">
+          <div class="ce-photo" id="cePhoto"><div class="ce-photo-placeholder">PROFILE<br>PHOTO</div></div>
+          <div class="ce-photo-actions">
+            <input type="file" id="cePhotoInput" accept="image/jpeg,image/png,image/webp" hidden>
+            <button type="button" class="primary" id="cePhotoPick">프로필 사진</button>
+            <button type="button" id="cePhotoClear">사진 제거</button>
+            <div class="ce-photo-hint">JPG · PNG · WEBP</div>
           </div>
-          <div class="career-clock"><span id="careerSeason">SEASON 1</span><b id="careerWeek">WEEK 1 / 12</b></div>
         </div>
 
+        <form class="ce-form" id="ceForm">
+          <div class="ce-two">
+            <div class="ce-field"><label>이름</label><input class="ce-input" id="ceName" maxlength="16" autocomplete="off" placeholder="이름" required></div>
+            <div class="ce-field"><label>등번호</label><input class="ce-input" id="ceNumber" type="number" min="0" max="99" value="7" required></div>
+          </div>
+
+          <div class="ce-field"><div class="ce-section-label">투타</div><div class="ce-choice-row" id="ceThrowBat">
+            <button type="button" class="ce-choice active" data-v="우투우타"><b>우투우타</b></button>
+            <button type="button" class="ce-choice" data-v="우투좌타"><b>우투좌타</b></button>
+            <button type="button" class="ce-choice" data-v="좌투좌타"><b>좌투좌타</b></button>
+          </div></div>
+
+          <div class="ce-field"><div class="ce-section-label">포지션</div><div class="ce-position" id="cePosition">
+            <button type="button" class="ce-pos active" data-v="SS">SS</button><button type="button" class="ce-pos" data-v="2B">2B</button><button type="button" class="ce-pos" data-v="3B">3B</button><button type="button" class="ce-pos" data-v="1B">1B</button>
+            <button type="button" class="ce-pos" data-v="CF">CF</button><button type="button" class="ce-pos" data-v="RF">RF</button><button type="button" class="ce-pos" data-v="LF">LF</button><button type="button" class="ce-pos" data-v="C">C</button>
+          </div></div>
+
+          <div class="ce-field"><label>희망 구단</label><select class="ce-select" id="ceTeam">
+            <option>서울 블레이즈</option><option>부산 마리너스</option><option>인천 웨이브</option><option>대전 볼츠</option><option>광주 타이탄스</option><option>대구 레드폭스</option><option>수원 나이츠</option><option>창원 레이븐스</option>
+          </select></div>
+
+          <div class="ce-field"><div class="ce-section-label">플레이 스타일</div><div class="ce-style-list" id="ceStyle">
+            <button type="button" class="ce-style active" data-v="balanced"><b>밸런스</b><span>전 능력 균형</span></button>
+            <button type="button" class="ce-style" data-v="contact"><b>교타자</b><span>컨택 · 수비</span></button>
+            <button type="button" class="ce-style" data-v="slugger"><b>거포</b><span>파워</span></button>
+            <button type="button" class="ce-style" data-v="speed"><b>호타준족</b><span>주루 · 컨택</span></button>
+          </div></div>
+
+          <div class="ce-two">
+            <div class="ce-field"><label>생년월일</label><input class="ce-input" id="ceBirth" type="date" value="2008-03-01"></div>
+            <div class="ce-field"><label>출신학교</label><input class="ce-input" id="ceSchool" maxlength="24" placeholder="서울고"></div>
+          </div>
+          <div class="ce-two">
+            <div class="ce-field"><label>키</label><input class="ce-input" id="ceHeight" type="number" min="150" max="210" value="178"></div>
+            <div class="ce-field"><label>몸무게</label><input class="ce-input" id="ceWeight" type="number" min="50" max="130" value="75"></div>
+          </div>
+
+          <div class="ce-error" id="ceError"></div>
+          <button class="ce-submit" id="ceSubmit" type="submit">커리어 시작</button>
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <main id="app">
+    <section class="shell home" id="homeView">
+      <header class="brand-head"><div class="eyebrow">BASEBALL CAREER × RIVAL DUEL</div><h1>DUGOUT<br><span>DUEL</span></h1></header>
+      <section id="onboardingPanel" class="onboarding hidden"><button class="cta big" id="newPlayerBtn">선수 등록</button></section>
+      <section id="dashboardPanel" class="dashboard hidden">
+        <div class="dashboard-top"><div><div class="eyebrow">MY CAREER</div><h2>PLAYER</h2></div><div class="career-clock"><span id="careerSeason">SEASON 1</span><b id="careerWeek">WEEK 1 / 12</b></div></div>
         <div id="myPlayerCard"></div>
-
-        <section class="decision solo-decision">
-          <div class="decision-head">
-            <div><div class="eyebrow">SOLO CAREER</div><h3>주간 훈련 계획</h3></div>
-            <div class="ready-state">선택 후<br>주간 일정 진행</div>
-          </div>
-          <div class="action-grid" id="soloActionGrid">
-            <button data-solo-action="contact"><b>컨택 집중</b><span>CON 중심</span></button>
-            <button data-solo-action="power"><b>장타 훈련</b><span>POW 중심</span></button>
-            <button data-solo-action="discipline"><b>선구안 훈련</b><span>DISC 중심</span></button>
-            <button data-solo-action="speed"><b>주루·수비</b><span>SPD · DEF</span></button>
-            <button data-solo-action="recovery"><b>회복</b><span>피로 관리</span></button>
-          </div>
-        </section>
-
-        <section class="duel-hub">
-          <div class="duel-copy"><div class="eyebrow">MULTIPLAYER</div><h3>라이벌 매치</h3><p>현재 커리어 선수로 2인 비공개 매치를 진행합니다.</p></div>
-          <div class="duel-actions">
-            <button class="cta" id="hostRoomBtn">비공개 룸 생성</button>
-            <div class="join-row"><input id="joinCode" maxlength="10" autocomplete="off" placeholder="ROOM CODE" /><button id="joinRoomBtn">입장</button></div>
-            <button class="resume hidden" id="resumeRoomBtn">진행 중인 룸</button>
-          </div>
-        </section>
-
+        <section class="decision solo-decision"><div class="decision-head"><div><div class="eyebrow">SOLO CAREER</div><h3>주간 훈련 계획</h3></div><div class="ready-state">선택 후<br>주간 일정 진행</div></div><div class="action-grid" id="soloActionGrid">
+          <button data-solo-action="contact"><b>컨택</b><span>타격 정확도</span></button><button data-solo-action="power"><b>장타</b><span>파워</span></button><button data-solo-action="discipline"><b>선구</b><span>출루</span></button><button data-solo-action="speed"><b>주루·수비</b><span>스피드·수비</span></button><button data-solo-action="recovery"><b>회복</b><span>피로 관리</span></button>
+        </div></section>
+        <section class="duel-hub"><div class="duel-copy"><div class="eyebrow">MULTIPLAYER</div><h3>라이벌 매치</h3><p>현재 커리어 선수로 2인 비공개 매치를 진행합니다.</p></div><div class="duel-actions"><button class="cta" id="hostRoomBtn">비공개 룸 생성</button><div class="join-row"><input id="joinCode" maxlength="10" autocomplete="off" placeholder="ROOM CODE" /><button id="joinRoomBtn">입장</button></div><button class="resume hidden" id="resumeRoomBtn">진행 중인 룸</button></div></section>
         <button class="ghost-danger" id="resetPlayerBtn">이 기기 선수 연결 해제</button>
       </section>
     </section>
 
-    <section class="shell hidden" id="createView">
-      <button class="back" id="cancelCreateBtn">← BACK</button>
-      <div class="eyebrow">PLAYER CREATION</div>
-      <h2>선수 등록</h2>
-      <p class="form-note">등록한 프로필은 솔로와 멀티플레이에 공통으로 사용됩니다.</p>
-
-      <form id="playerForm" class="player-form">
-        <label>이름<input id="playerName" maxlength="16" placeholder="이름" required /></label>
-        <div class="two-col">
-          <label>등번호<input id="playerNumber" type="number" min="0" max="99" value="7" required /></label>
-          <label>포지션<select id="playerPosition">
-            <option value="SS">유격수 SS</option><option value="2B">2루수 2B</option><option value="3B">3루수 3B</option>
-            <option value="1B">1루수 1B</option><option value="CF">중견수 CF</option><option value="RF">우익수 RF</option>
-            <option value="LF">좌익수 LF</option><option value="C">포수 C</option>
-          </select></label>
-        </div>
-
-        <div class="field-title">플레이스타일</div>
-        <div class="choice-grid" id="archetypeChoices">
-          <button type="button" class="choice selected" data-arch="balanced"><b>밸런스</b><span>균형형</span></button>
-          <button type="button" class="choice" data-arch="contact"><b>교타자</b><span>컨택 · 수비</span></button>
-          <button type="button" class="choice" data-arch="slugger"><b>거포</b><span>파워</span></button>
-          <button type="button" class="choice" data-arch="speed"><b>호타준족</b><span>주루 · 컨택</span></button>
-        </div>
-
-        <label>희망 구단<select id="wishTeam">
-          <option>서울 블레이즈</option><option>부산 마리너스</option><option>인천 웨이브</option><option>대전 볼츠</option>
-          <option>광주 타이탄스</option><option>대구 레드폭스</option><option>수원 나이츠</option><option>창원 레이븐스</option>
-        </select></label>
-
-        <button class="cta" type="submit" id="createPlayerBtn">등록 완료</button>
-      </form>
-    </section>
+    <section class="shell hidden" id="createView"><button class="back" id="cancelCreateBtn">← BACK</button><form id="playerForm" class="player-form"><input id="playerName"><input id="playerNumber"><select id="playerPosition"><option>SS</option></select><div id="archetypeChoices"></div><select id="wishTeam"><option>서울 블레이즈</option></select><button type="submit" id="createPlayerBtn">등록</button></form></section>
 
     <section class="game hidden" id="gameView">
-      <header class="game-head">
-        <div>
-          <button class="back inline-back" id="careerBackBtn">← MY CAREER</button>
-          <div class="eyebrow">PRIVATE DUEL</div>
-          <div class="room-line">ROOM <button id="roomCodeBtn"></button></div>
-        </div>
-        <div class="season-badge"><span>RIVAL MATCH</span><b id="roundLabel">ROUND 1</b></div>
-      </header>
-
-      <section class="waiting hidden" id="waitingPanel">
-        <div class="pulse"></div><h2>상대 입장 대기</h2>
-        <p>초대 링크 또는 룸 코드를 공유하세요.</p>
-        <button class="invite-code" id="inviteCode"></button>
-        <button class="cta compact" id="shareBtn">초대 링크 복사</button>
-      </section>
-
-      <section id="matchPanel" class="hidden">
-        <div class="versus" id="versusCards"></div>
-
-        <section class="decision">
-          <div class="decision-head"><div><div class="eyebrow">RIVAL ROUND</div><h3>주간 계획 선택</h3></div><div id="readyState" class="ready-state"></div></div>
-          <div class="action-grid" id="actionGrid">
-            <button data-action="contact"><b>컨택 집중</b><span>CON 중심</span></button>
-            <button data-action="power"><b>장타 훈련</b><span>POW 중심</span></button>
-            <button data-action="discipline"><b>선구안 훈련</b><span>DISC 중심</span></button>
-            <button data-action="speed"><b>주루·수비</b><span>SPD · DEF</span></button>
-            <button data-action="recovery"><b>회복</b><span>피로 관리</span></button>
-          </div>
-          <p class="lock-note">양쪽 선택이 제출되면 결과가 동시에 반영됩니다.</p>
-        </section>
-
-        <section class="feed-card"><div class="eyebrow">DUEL FEED</div><div id="feed"></div></section>
-      </section>
-
+      <header class="game-head"><div><button class="back inline-back" id="careerBackBtn">← MY CAREER</button><div class="eyebrow">PRIVATE DUEL</div><div class="room-line">ROOM <button id="roomCodeBtn"></button></div></div><div class="season-badge"><span>RIVAL MATCH</span><b id="roundLabel">ROUND 1</b></div></header>
+      <section class="waiting hidden" id="waitingPanel"><div class="pulse"></div><h2>상대 입장 대기</h2><p>초대 링크 또는 룸 코드를 공유하세요.</p><button class="invite-code" id="inviteCode"></button><button class="cta compact" id="shareBtn">초대 링크 복사</button></section>
+      <section id="matchPanel" class="hidden"><div class="versus" id="versusCards"></div><section class="decision"><div class="decision-head"><div><div class="eyebrow">RIVAL ROUND</div><h3>주간 계획 선택</h3></div><div id="readyState" class="ready-state"></div></div><div class="action-grid" id="actionGrid"><button data-action="contact"><b>컨택</b></button><button data-action="power"><b>장타</b></button><button data-action="discipline"><b>선구</b></button><button data-action="speed"><b>주루·수비</b></button><button data-action="recovery"><b>회복</b></button></div><p class="lock-note">양쪽 선택이 제출되면 결과가 동시에 반영됩니다.</p></section><section class="feed-card"><div class="eyebrow">DUEL FEED</div><div id="feed"></div></section></section>
       <button class="ghost-danger" id="leaveRoomBtn">룸 연결 해제</button>
     </section>
   </main>
 
   <div class="toast" id="toast"></div>
-  <script src="./config.js?v=6"></script>
-  <script src="./app.js?v=6"></script>
-  <script src="./bootstrap.js?v=2"></script>
+  <script src="./config.js?v=10"></script>
+  <script src="./app.js?v=10"></script>
+  <script>
+    (()=>{
+      const hasPlayer=(()=>{try{return Boolean(localStorage.getItem('dugout-duel-player-token-v2'))}catch{return false}})();
+      const s=document.createElement('script');
+      s.src=hasPlayer?'./fm.js?v=4':'./entry-static.js?v=1';
+      s.onerror=()=>{const e=document.getElementById('ceError');if(e)e.textContent='화면 로드에 실패했습니다. 새로고침해 주세요.'};
+      document.body.appendChild(s);
+    })();
+  </script>
 </body>
 </html>
