@@ -64,9 +64,10 @@
 
   function setBusy(next) {
     busy = next;
-    $$('#soloActionGrid button, #actionGrid button, #hostRoomBtn, #joinRoomBtn, #createPlayerBtn').forEach((b) => {
+    $$('#soloActionGrid button, #hostRoomBtn, #joinRoomBtn, #createPlayerBtn').forEach((b) => {
       if (b) b.disabled = next;
     });
+    if (room && !$('#gameView').classList.contains('hidden')) renderRoom();
   }
 
   function playerFromForm() {
@@ -152,21 +153,22 @@
     if (busy) return;
     const player = playerFromForm();
     if (!player.name) return toast('선수 이름부터 써라');
+    let pendingInvite = '';
     setBusy(true);
     try {
       const data = await rpc('dugout_create_player', { p_player: player });
       playerToken = data.token;
       localStorage.setItem(playerTokenKey, playerToken);
       playerState = { player: data.player, season: data.season, week: data.week };
+      pendingInvite = inviteCode();
       renderHome();
       toast('내 선수 생성 완료');
-      const invited = inviteCode();
-      if (invited) await joinRoom(invited, true);
     } catch (e2) {
       toast(normalizeError(e2.message));
     } finally {
       setBusy(false);
     }
+    if (pendingInvite) await joinRoom(pendingInvite, true);
   }
 
   async function soloAction(action) {
@@ -312,7 +314,6 @@
       toast(normalizeError(e.message));
     } finally {
       setBusy(false);
-      renderRoom();
     }
   }
 
