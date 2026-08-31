@@ -9,11 +9,11 @@ window.DUGOUT_CONFIG = {
 (() => {
   const css = document.createElement('link');
   css.rel = 'stylesheet';
-  css.href = './premium.css?v=4';
+  css.href = './premium.css?v=5';
   document.head.appendChild(css);
   window.addEventListener('load', () => {
     const script = document.createElement('script');
-    script.src = './premium.js?v=4';
+    script.src = './premium.js?v=5';
     document.body.appendChild(script);
   }, { once: true });
 })();
